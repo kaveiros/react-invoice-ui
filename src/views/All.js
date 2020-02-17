@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Alert} from 'reactstrap'
-import FilterableTable from 'react-filterable-table'
+//import FilterableTable from 'react-filterable-table'
 
 class All extends Component {
 

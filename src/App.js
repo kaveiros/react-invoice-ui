@@ -1,10 +1,8 @@
-import React, { Component, useState } from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter} from "react-router-dom";
 import SideBar from './views/Sidebar'
 import Content from './views/Content';
-import Base from './views/Base'
 
 
 const App = (props) => {
