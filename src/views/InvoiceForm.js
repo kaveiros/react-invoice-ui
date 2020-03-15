@@ -11,19 +11,20 @@ class InvoiceForm extends Component {
         super(props)
         this.state = {
             inputs: [],
-            initial:0,
-            currentDate : new Date().toISOString()
+            initial: 0,
+            currentDate: new Date().toISOString(),
+            payments: []
         }
 
-        this.handleSubmit = this.handleSubmit.bind(this)
-        this.delete = this.delete.bind(this)
+        //this.handleSubmit = this.handleSubmit.bind(this)
+        // this.delete = this.delete.bind(this)
     }
 
 
-    handleSubmit(event) {
+    addPayment =(event) => {
         event.preventDefault();
         console.log("Clicked");
-        this.setState(prevState => ({initial:prevState.initial + 1})) 
+        this.setState(prevState => ({ initial: prevState.initial + 1 }))
         var newInput = `input-${this.state.initial}`;
         this.setState(prevState => ({ inputs: prevState.inputs.concat([newInput]) }));
         console.log(this.state)
@@ -31,16 +32,40 @@ class InvoiceForm extends Component {
 
     }
 
-    delete = (e, index) => {
-        console.log(e)
-        console.log(index)
+    delete = (event) => {
+
+        //console.log(event.target.value)
+        
+        var inputToDelete = 'input-' + event
+        if (event > 0){
+            this.setState(prevState => ({ inputs: prevState.inputs.splice(prevState.inputs.indexOf(inputToDelete)) }))
+        }
+        else {
+            this.setState(prevState => ({ inputs: prevState.inputs = []}))
+        }
+        //event.preventDefault();
+        //console.log(e)
+        console.log(event)
+        console.log(inputToDelete)
+    }
+
+    submitForm = (e) => {
+        console.log(e.target)
+    }
+
+    amountChanged = (e) => {
+        console.log("amount changed to " + e.target.value)
+
+    }
+    dateChanged = (e, f) => {
+        console.log("date is " + e + " => " + f)
     }
 
 
 
     render() {
-       // const disableSubmit = false;
-       // const style = { background: "#FAFAFA", padding: 10, borderRadius: 5 };
+        // const disableSubmit = false;
+        // const style = { background: "#FAFAFA", padding: 10, borderRadius: 5 };
         //const { value } = this.props;
         //const emails = value.get("emails");
 
@@ -48,26 +73,32 @@ class InvoiceForm extends Component {
             <Form>
                 <FormGroup>
                     <Label for="exampleEmail">AFM</Label>
-                    <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" />
+                    <Input type="input" name="email" id="afm" placeholder="ΑΦΜ" />
+                    <Label for="payment">Payment amount</Label>
+                    <Input type="input" name="amount" id='payment' placeholder="amount" onChange={(e) => { this.amountChanged(e) }} />
+                    <Label for="paymentDate">Payment amount</Label>
+                    <DatePicker dateFormat="DD MM YYYY" value={this.state.currentDate} onChange={(e, f) => { this.dateChanged(e, f) }} />
+                    <Button onClick={this.addPayment}><FontAwesomeIcon icon={faPlus} /></Button>
                 </FormGroup>
                 <div id="add">{
+                    this.state.inputs.length >0 ? 
                     this.state.inputs.map((item, index) => (
                         <div key={index}>
-                    <FormGroup>
-                        {console.log(index)}
-                        <Label for="payment">Payment amount</Label>
-                        <Input type="input" name="amount" id="payment" placeholder="amount" />
-                        <Label for="paymentDate">Payment amount</Label>
-                        <DatePicker value   = {this.state.currentDate} />
-                        <Button id={item.initial} onClick={this.delete(index)}><FontAwesomeIcon icon={faMinus}/></Button>
-                    </FormGroup>
-                    </div>
+                            <FormGroup>
+                                {console.log(index)}
+                                <Label for="payment">Payment amount</Label>
+                                <Input type="input" name="amount" id={index} placeholder="amount" onChange={(e) => { this.amountChanged(e) }} />
+                                <Label for="paymentDate">Payment amount</Label>
+                                <DatePicker id={"date-"+index} dateFormat="DD MM YYYY" value={this.state.currentDate} onChange={(e, f) => { this.dateChanged(e, f) }} />
+                                <Button id={"delete-"+index} onClick={() => { this.delete(index) }}><FontAwesomeIcon icon={faMinus} /></Button>
+                            </FormGroup>
+                        </div>
 
-                    ))}
+                    )): <div></div>}
                 </div>
-                <Button onClick={this.handleSubmit}><FontAwesomeIcon icon={faPlus}/></Button>
-                <br/>
-                <Button>Submit</Button>
+
+                <br />
+                <Button onClick={(e) => { this.submitForm(e) }}>Submit</Button>
             </Form>
         )
 

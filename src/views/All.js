@@ -1,21 +1,49 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Alert} from 'reactstrap'
+import { Alert, Table } from 'reactstrap'
+import { loadInvoices } from '../api/Api'
 //import FilterableTable from 'react-filterable-table'
 
 class All extends Component {
 
+    componentDidMount() {
+        console.log("Invoices")
+        console.log(this.props.loadInvoices());
+    }
+
+
     render() {
-        
-        if (this.props.bills.length > 0) {
+        const tableContents = this.props.bills.data.data
+        console.log(tableContents)
+        // return(<div>LOADING.....</div>)
+
+        if (tableContents) {
             return (
-                    this.props.bills.map(bill =>
-                    <div>
-                        <div>{bill._id}</div>
-                        <div>{bill.afm}</div>
-                        <div>{bill.name}</div>
-                    </div>
-                    )
+                <Table>
+                    <thead>
+                        <tr>
+                            <th>AFM</th>
+                            <th>Name</th>
+                            <th>Invoice number</th>
+                            <th>Remaining Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {
+                            tableContents.map(data =>
+                                <tr key={data._id}>
+                                    <td>{data.afm}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.billNumber}</td>
+                                    <td>{data.remainingAmount}</td>
+
+                                </tr>
+                            )}
+
+
+                    </tbody>
+                </Table>
             )
         }
         else return (
@@ -33,9 +61,14 @@ class All extends Component {
 
 
 const mapStateToProps = (state) => {
+    console.log("Inside map state to props")
     console.log(state)
     return {
         bills: state
     }
 }
-export default connect(mapStateToProps)(All)
+
+const mapDispatchToProps = {
+    loadInvoices
+}
+export default connect(mapStateToProps, mapDispatchToProps)(All)
