@@ -1,4 +1,4 @@
-import {LOAD_INVOICES_LOADING, LOAD_INVOICES_SUCCESS, LOAD_INVOICES_ERROR} from '../api/Api'
+import * as Actions from '../actions/ActionTypes'
 // const initialState = [
 //     {
 //         "_id" : "5e30bd6fd1b25a2978170dfe",
@@ -22,7 +22,7 @@ import {LOAD_INVOICES_LOADING, LOAD_INVOICES_SUCCESS, LOAD_INVOICES_ERROR} from 
 // ]
 
 const initialState = {
-    data:[],
+    invoices:[],
     loading: false,
     error:''
     
@@ -30,31 +30,27 @@ const initialState = {
 
 const InvoiceReducer = (state = initialState, action) => {
     switch(action.type) {
-        case 'ADD_INVOICE':
-            return state.concat([action.data])
-        case LOAD_INVOICES_SUCCESS:{
+        case Actions.LOAD_INVOICES_LOADING:
             return {
                 ...state,
-                data:action.data,
+                loading:true
+            }
+        case Actions.LOAD_INVOICES_SUCCESS:{
+            return {
+                ...state,
+                invoices:action.invoices,
                 loading:false
             }
         }
-        case LOAD_INVOICES_ERROR:{
+        case Actions.LOAD_INVOICES_ERROR:{
             return{
                 ...state,
-                loading:false,
+                loading:action.loading,
                 error:action.error
                 
             }
         }
-        case LOAD_INVOICES_ERROR:{
-            return {
-                ...state,
-                loading:false,
-                error:action.error
-                
-            }
-        }
+
         default:
             return state
     }
