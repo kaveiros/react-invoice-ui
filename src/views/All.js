@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Alert, Table } from 'reactstrap'
 import * as ApiActions from '../api/ApiActions'
+import { Link } from 'react-router-dom'
 //import FilterableTable from 'react-filterable-table'
 
 class All extends Component {
@@ -11,6 +12,8 @@ class All extends Component {
         this.props.onLoadInvoices()
        console.log(this.props);
     }
+    
+
 
 
     render() {
@@ -34,22 +37,29 @@ class All extends Component {
 
         }
 
+        if(!this.props.invoices) {
+            return (
+                <Alert color="dark">
+                    <p>Loading.....</p>
+                </Alert>
+            )        }
+
 
             return (
                 <Table>
                     <thead>
                         <tr>
-                            <th>AFM</th>
-                            <th>Name</th>
-                            <th>Invoice number</th>
-                            <th>Remaining Amount</th>
+                            <th>ΑΦΜ</th>
+                            <th>Όνομα</th>
+                            <th>Αρ. Τιμολογίου</th>
+                            <th>Υπόλοιπο</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             this.props.invoices.map(data =>
                                 <tr key={data._id}>
-                                    <td>{data.afm}</td>
+                                    <td><Link to={"/details/" + data._id}>{data.afm}</Link></td>
                                     <td>{data.name}</td>
                                     <td>{data.billNumber}</td>
                                     <td>{data.remainingAmount}</td>

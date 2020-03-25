@@ -14,7 +14,7 @@ const NavBar =  (props) => {
       <Button color="info" onClick={props.toggle}>
         <FontAwesomeIcon icon={faAlignLeft}/>
       </Button>
-      <NavbarText>Simple Text</NavbarText>
+      <NavbarText>Εφαρμογή τιμολογίων</NavbarText>
 
     </Navbar>
   </div>

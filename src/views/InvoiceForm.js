@@ -72,23 +72,24 @@ class InvoiceForm extends Component {
         return (
             <Form>
                 <FormGroup>
-                    <Label for="exampleEmail">AFM</Label>
+                    <Label for="exampleEmail">ΑΦΜ</Label>
                     <Input type="input" name="email" id="afm" placeholder="ΑΦΜ" />
-                    <Label for="payment">Payment amount</Label>
+                    <Label for="payment">Ποσό Πληρωμής</Label>
                     <Input type="input" name="amount" id='payment' placeholder="amount" onChange={(e) => { this.amountChanged(e) }} />
-                    <Label for="paymentDate">Payment amount</Label>
+                    <Label for="paymentDate">Ημερομηνία πληρωμής</Label>
                     <DatePicker dateFormat="DD MM YYYY" value={this.state.currentDate} onChange={(e, f) => { this.dateChanged(e, f) }} />
                     <Button onClick={this.addPayment}><FontAwesomeIcon icon={faPlus} /></Button>
                 </FormGroup>
+                <FormGroup>
                 <div id="add">{
                     this.state.inputs.length >0 ? 
                     this.state.inputs.map((item, index) => (
                         <div key={index}>
                             <FormGroup>
                                 {console.log(index)}
-                                <Label for="payment">Payment amount</Label>
+                                <Label for="payment">Ποσό Πληρωμής</Label>
                                 <Input type="input" name="amount" id={index} placeholder="amount" onChange={(e) => { this.amountChanged(e) }} />
-                                <Label for="paymentDate">Payment amount</Label>
+                                <Label for="paymentDate">Ημερομηνία πληρωμής</Label>
                                 <DatePicker id={"date-"+index} dateFormat="DD MM YYYY" value={this.state.currentDate} onChange={(e, f) => { this.dateChanged(e, f) }} />
                                 <Button id={"delete-"+index} onClick={() => { this.delete(index) }}><FontAwesomeIcon icon={faMinus} /></Button>
                             </FormGroup>
@@ -96,6 +97,7 @@ class InvoiceForm extends Component {
 
                     )): <div></div>}
                 </div>
+                </FormGroup>
 
                 <br />
                 <Button onClick={(e) => { this.submitForm(e) }}>Submit</Button>
