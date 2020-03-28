@@ -54,6 +54,12 @@ export const loadInvoices = ()  => {
     }
 }
 
+export const createNewInvoice = () => {
+    return {
+        type: ActionTypes.NEW_INVOICE_CREATE
+    }
+}
+
 export const loadSingleInvoice = (id) => {
     return dispatch => {
         dispatch(setIsLoading());

@@ -85,7 +85,7 @@ class All extends Component {
 const mapStateToProps = (state) => {
  
     return {
-        invoices: state.invoices,
+        invoices: state.InvoiceReducer.invoices,
         loading: state.loading,
         error: state.error
     }

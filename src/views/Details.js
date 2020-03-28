@@ -14,6 +14,11 @@ class Details extends Component {
         console.log(this.props.invoice)
     }
 
+    createNewHandler = () => {
+        this.props.onCreateNewInvoice();
+
+    }
+
     render() {
 
 
@@ -57,7 +62,7 @@ class Details extends Component {
                     )
 
                     }
-                    <Button color="success" tag={Link} to={"/form"}>Νέο τιμολόγιο</Button>
+                    <Button color="success" onClick={this.createNewHandler} tag={Link} to={"/form"}>Νέο τιμολόγιο</Button>
                 </CardBody>
 
             </Card>
@@ -71,14 +76,15 @@ class Details extends Component {
 const matchStateToProps = (state) => {
 
     return {
-        invoice: state.invoices
+        invoice: state.InvoiceReducer.invoices
     }
 
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onLoadInvoive: _id => dispatch(ApiActions.loadSingleInvoice(_id))
+        onLoadInvoive: _id => dispatch(ApiActions.loadSingleInvoice(_id)),
+        onCreateNewInvoice: () => dispatch(ApiActions.createNewInvoice())
     }
 }
 

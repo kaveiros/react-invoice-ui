@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import './App.css';
-import { BrowserRouter} from "react-router-dom";
 import SideBar from './views/Sidebar'
 import Content from './views/Content';
 
 
-const App = (props) => {
+class App extends Component {
 
-  const [isOpen, setOpen] = useState(true)
-  const toggle = () => setOpen(!isOpen)
-
+  render() {
     return (
-      <BrowserRouter>
+      
       <div className="App wrapper">
-      <SideBar toggle={toggle} isOpen={isOpen}/>
-      <Content props={props} toggle={toggle} isOpen={isOpen}/>
+        <SideBar/>
+        <Content/>
+        {/* <SideBar toggle={toggle} isOpen={isOpen} />
+        <Content props={this.props} toggle={toggle} isOpen={isOpen} /> */}
       </div>
-      </BrowserRouter>
-      //<Base/>
 
     )
-  
+
+  }
+
 }
+
+// const[isOpen, setOpen] = useState(true)
+// const toggle = () => setOpen(!isOpen)
 
 export default App;

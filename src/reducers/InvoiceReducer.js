@@ -1,8 +1,8 @@
 import * as Actions from '../actions/ActionTypes'
-import { act } from 'react-dom/test-utils'
 
 const initialState = {
     invoices:[],
+    invoice:null,
     loading: false,
     error:''
     
@@ -33,10 +33,15 @@ const InvoiceReducer = (state = initialState, action) => {
         case Actions.LOAD_INVOICE_DETAILS:{
             return {
                 ...state,
-                invoices:action.invoice,
+                invoice:action.invoice,
                 loading:action.loading,
-                error:action.error,
-                loading:false
+                error:action.error
+            }
+        }
+        case Actions.NEW_INVOICE_CREATE: {
+            return{
+                ...state,
+                invoice : null
             }
         }
 
