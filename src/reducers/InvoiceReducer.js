@@ -2,7 +2,7 @@ import * as Actions from '../actions/ActionTypes'
 
 const initialState = {
     invoices:[],
-    invoice:null,
+    invoice:{},
     loading: false,
     error:''
     

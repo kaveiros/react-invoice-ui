@@ -38,11 +38,6 @@ class Sidebar extends Component {
                         </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={DOMLINK} to={'/new'}>
-                                <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />New
-                        </NavLink>
-                        </NavItem>
-                        <NavItem>
                             <NavLink tag={DOMLINK} to={'/form'}>
                                 <FontAwesomeIcon icon={faPaperPlane} className="mr-2" />Προσθήκη
                          </NavLink>

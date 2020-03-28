@@ -7,7 +7,9 @@ export const addPayment =(id)=> {
     return {
         
             type : ACTIONS.ADD_FORM_ADDITIONAL_PAYMENT,
-            payment: {_id :id}
+            payment: {
+                _id :id
+            }
         
     }
 

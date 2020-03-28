@@ -41,9 +41,7 @@ export const loadInvoices = ()  => {
     
         axios.get(baseUrl + "invoice/all")
         .then(response => {
-            console.log("got response from server")
             const invoices = response.data
-            console.log(invoices)
             dispatch(setInvoices(invoices))
     
         }).catch(error=> {
@@ -65,8 +63,8 @@ export const loadSingleInvoice = (id) => {
         dispatch(setIsLoading());
         axios.get(baseUrl + "invoice/" + id)
         .then(response => {
-            console.log("got response for sngle invoire....")
-            console.log(response.data)
+           // console.log("got response for sngle invoire....")
+            //console.log(response.data)
             dispatch(setSingleInvoice(response.data))
         }).catch(error => {
             dispatch(hasApiError(error.message));

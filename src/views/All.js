@@ -10,7 +10,7 @@ class All extends Component {
     
     componentDidMount() {
         this.props.onLoadInvoices()
-       console.log(this.props);
+       //console.log(this.props);
     }
     
 
@@ -57,8 +57,8 @@ class All extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.props.invoices.map(data =>
-                                <tr key={data._id}>
+                            this.props.invoices.map((data, index) =>
+                                <tr key={index}>
                                     <td><Link to={"/details/" + data._id}>{data.afm}</Link></td>
                                     <td>{data.name}</td>
                                     <td>{data.billNumber}</td>

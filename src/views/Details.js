@@ -25,7 +25,7 @@ class Details extends Component {
         if (this.props.error) {
             return (
                 <Alert color="danger">
-                    <p>Error occured fetching invoice details</p>
+                    <p>Σφάλμα ανάκτησης τιμολογίου</p>
                 </Alert>
             )
 
@@ -33,13 +33,13 @@ class Details extends Component {
         if (this.props.loading) {
             return (
                 <Alert color="dark">
-                    <p>Loading.....</p>
+                    <p>Φορτώνει.....</p>
                 </Alert>
             )
 
         }
 
-        const payments = this.props.invoice.paymentDates
+
         return (
 
             <Card>
@@ -48,21 +48,27 @@ class Details extends Component {
                     <CardTitle>ΑΦΜ: {this.props.invoice.afm}</CardTitle>
                     <CardSubtitle>Αριθμός τιμολογίου: {this.props.invoice.billNumber}</CardSubtitle>
                     <CardText>Τελευταια πληρωμη: {this.props.invoice.billDate}</CardText>
-                    <h5>Επιπλέον πληρωμές αν υπάρχουν</h5>
-                    {payments && (
-                        this.props.invoice.paymentDates.map(d =>
-                            <CardDeck>
-                                <Card>
-                                    <CardText>Ποσό:{d.amount}</CardText>
-                                    <CardText>Ημερομηνία:{d.date}</CardText>
-                                </Card>
-                            </CardDeck>
-                        )
+                    {this.props.invoice.paymentDates != null && this.props.invoice.paymentDates.length > 0 ?
 
-                    )
+                        (<div>
+                            <h5>Επιπλέον πληρωμές αν υπάρχουν</h5>
+                            {
+                                this.props.invoice.paymentDates.map(d =>
+                                    <CardDeck>
+                                        <Card>
+                                            <CardText>Ποσό:{d.amount}</CardText>
+                                            <CardText>Ημερομηνία:{d.date}</CardText>
+                                        </Card>
+                                    </CardDeck>)}
 
-                    }
+
+                        </div>) : (<Alert color="secondary">
+                            <p>Δεν υπάρχουν επιπλέον πληρωμές</p>
+                            </Alert>) 
+                            }
                     <Button color="success" onClick={this.createNewHandler} tag={Link} to={"/form"}>Νέο τιμολόγιο</Button>
+
+
                 </CardBody>
 
             </Card>
@@ -76,7 +82,7 @@ class Details extends Component {
 const matchStateToProps = (state) => {
 
     return {
-        invoice: state.InvoiceReducer.invoices
+        invoice: state.InvoiceReducer.invoice
     }
 
 }
