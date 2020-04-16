@@ -18,58 +18,74 @@ class All extends Component {
 
     render() {
 
+        const {error} = this.props
 
 
-        if (this.props.error) {
-            return (
-                <Alert color="danger">
-                    <p>Error occured fetching invoices</p>
-                </Alert>
-            )
 
-        }
-        if (this.props.loading) {
-            return (
-                <Alert color="dark">
-                    <p>Loading.....</p>
-                </Alert>
-            )
-
-        }
-
-        if(!this.props.invoices) {
-            return (
-                <Alert color="dark">
-                    <p>Loading.....</p>
-                </Alert>
-            )        }
 
 
             return (
+                <div>
+
+                {this.props.error && (
+            
+                    <Alert color="danger">
+                        <p>Error occured fetching invoices</p>
+                    </Alert>
+                )
+    
+            }
+            {this.props.loading &&
+                (
+                    <Alert color="dark">
+                        <p>Loading.....</p>
+                    </Alert>
+                )
+    
+            }
+    
+            {!this.props.invoices &&
+                (
+                    <Alert color="dark">
+                        <p>Loading.....</p>
+                    </Alert>
+                )        
+            }
+            {console.log(this.props)}
+            {!error && (
                 <Table>
-                    <thead>
-                        <tr>
-                            <th>ΑΦΜ</th>
-                            <th>Όνομα</th>
-                            <th>Αρ. Τιμολογίου</th>
-                            <th>Υπόλοιπο</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            this.props.invoices.map((data, index) =>
-                                <tr key={index}>
-                                    <td><Link to={"/details/" + data._id}>{data.afm}</Link></td>
-                                    <td>{data.name}</td>
-                                    <td>{data.billNumber}</td>
-                                    <td>{data.remainingAmount}</td>
+                <thead>
+                    <tr>
+                        <th>ΑΦΜ</th>
+                        <th>Όνομα</th>
+                        <th>Αρ. Τιμολογίου</th>
+                        <th>Υπόλοιπο</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        this.props.invoices.map((data, index) =>
+                            <tr key={index}>
+                                <td><Link to={"/details/" + data._id}>{data.afm}</Link></td>
+                                <td>{data.name}</td>
+                                <td>{data.billNumber}</td>
+                                <td>{data.mainAmount}</td>
 
-                                </tr>
-                            )}
+                            </tr>
+                        )}
 
 
-                    </tbody>
-                </Table>
+                </tbody>
+            </Table>
+
+            )
+
+            }
+
+
+
+
+                </div>
             )
 
 
