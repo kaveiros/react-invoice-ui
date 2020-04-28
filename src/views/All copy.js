@@ -33,16 +33,8 @@ class All extends Component {
         return (
                 <FilterableTable namespace="Invoices"
                     tableClassName="table table-dark"
-                    pagerTitles={
-                        <li class="page-item">
-      <span class="page-link">Previous</span>
-    </li>,
-                            <li class="page-item">
-                            <span class="page-link">Previous</span></li>
-                    }
-                    //pagerTopClassName="pagination, page-item, page-link" 
+                    pagerTopClassName="pagination" 
                     initialSort="afm"
-                    footerTrClassName="page-item"
                     className="container"
                     dataEndpoint="http://localhost:3000/invoice/all"
                     fields={fields}

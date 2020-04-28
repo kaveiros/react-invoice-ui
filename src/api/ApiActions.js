@@ -39,9 +39,9 @@ export const loadInvoices = ()  => {
     return dispatch => {
        dispatch(setIsLoading());
     
-        axios.get(baseUrl + "invoice/all")
+        axios.post(baseUrl + "invoice/all")
         .then(response => {
-            const invoices = response.data
+            const invoices = response.data.invoices
             dispatch(setInvoices(invoices))
     
         }).catch(error=> {

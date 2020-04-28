@@ -7,6 +7,8 @@ import { Switch } from 'react-router-dom';
 import All from './All'
 import InvoiceEdit from './InvoiceEdit'
 import Details from './Details'
+import InvoicesTable from './InvoicesTable'
+import Rtable from './RTable'
 
 
 const Content = (props) => {
@@ -15,7 +17,7 @@ const Content = (props) => {
         <Container fluid className={classNames('content', { 'is-open': props.isOpen })}>
             <NavBar toggle={props.toggle}/>
             <Switch>
-                <Route exact path="/all" component={All} />
+                <Route exact path="/all" component={Rtable} />
                 <Route exact path="/new" component={(props) => "New"} />
                 <Route exact path="/form" component={InvoiceEdit} />
                 <Route exact path="/details/:id" component={Details}/>

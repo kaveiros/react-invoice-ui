@@ -19,7 +19,7 @@ const InvoiceReducer = (state = initialState, action) => {
             return {
                 ...state,
                 invoices:action.invoices,
-                loading:false
+                loading: action.loading
             }
         }
         case Actions.LOAD_INVOICES_ERROR:{
