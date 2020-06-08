@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import SideBar from './views/Sidebar'
 import Content from './views/Content';

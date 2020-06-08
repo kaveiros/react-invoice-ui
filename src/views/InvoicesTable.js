@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import BaseTable, { Column } from 'react-base-table'
 import { connect } from 'react-redux'
-import { Alert, Table, Container, Spinner, Button, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
+import { Alert, Table, Spinner, Pagination, PaginationItem, PaginationLink } from 'reactstrap'
 import * as ApiActions from '../api/ApiActions'
 import { Link } from 'react-router-dom'
 

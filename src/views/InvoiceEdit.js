@@ -4,8 +4,6 @@ import DatePicker from 'reactstrap-date-picker'
 import * as formActions from '../actions/FormActions'
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from "uuid";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
-
 
 class InvoiceEdit extends Component {
 

@@ -19,11 +19,13 @@ export const hasApiError = (error) => {
     }
 }
 
-export const setInvoices = (invoices) =>{
+export const setInvoices = (data) =>{
     return {
         type: ActionTypes.LOAD_INVOICES_SUCCESS,
-        invoices:invoices,
-        loading: false
+        invoices:data.invoices,
+        loading: false,
+        pages: data.pages,
+        currentPage : data.currentPage
     }
 } 
 
@@ -35,14 +37,15 @@ export const setSingleInvoice = (invoice) => {
     }
 }
 
-export const loadInvoices = ()  => {
+export const loadInvoices = (page)  => {
     return dispatch => {
+        console.log("Clicked")
        dispatch(setIsLoading());
     
-        axios.post(baseUrl + "invoice/all")
+        axios.get(baseUrl + "invoice/all/" + page)
         .then(response => {
-            const invoices = response.data.invoices
-            dispatch(setInvoices(invoices))
+            const data = response.data
+            dispatch(setInvoices(data))
     
         }).catch(error=> {
             

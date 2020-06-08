@@ -4,10 +4,8 @@ import { Container } from 'reactstrap'
 import classNames from 'classnames';
 import NavBar from './NavBar'
 import { Switch } from 'react-router-dom';
-import All from './All'
 import InvoiceEdit from './InvoiceEdit'
 import Details from './Details'
-import InvoicesTable from './InvoicesTable'
 import Rtable from './RTable'
 
 

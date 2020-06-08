@@ -4,7 +4,9 @@ const initialState = {
     invoices:[],
     invoice:{},
     loading: false,
-    error:''
+    error:'',
+    pages:0,
+    currentPage:0
     
 }
 
@@ -19,7 +21,9 @@ const InvoiceReducer = (state = initialState, action) => {
             return {
                 ...state,
                 invoices:action.invoices,
-                loading: action.loading
+                loading: action.loading,
+                pages: action.pages,
+                currentPage: action.currentPage
             }
         }
         case Actions.LOAD_INVOICES_ERROR:{

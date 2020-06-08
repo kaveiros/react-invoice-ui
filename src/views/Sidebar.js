@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBriefcase, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { Nav, NavLink, NavItem } from 'reactstrap'
 import classNames from 'classnames';
-import { Link, NavLink as DOMLINK } from 'react-router-dom';
+import {NavLink as DOMLINK } from 'react-router-dom';
 import { connect } from 'react-redux'
 import * as NavActions from '../actions/NavbarActions'
 
