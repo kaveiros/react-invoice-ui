@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Table } from 'reactstrap'
+import { Table } from 'reactstrap'
 import { Link } from 'react-router-dom'
 
 const PaginatedTable = (props) => {
