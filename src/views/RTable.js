@@ -1,35 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import {
-    Alert, Input, InputGroup, 
-    ButtonDropdown,
-    InputGroupAddon, Button, DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
-    Container
-} from 'reactstrap'
+import Navbar from 'react-bootstrap/Navbar'
+import Dropdown from 'react-bootstrap/Dropdown'
 import PaginatedTable from './PaginatedTable'
+import Container from 'react-bootstrap/Container'
+import Alert from 'react-bootstrap/Alert'
 import axios from 'axios'
-import { FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-// import {fa-hand-o-right} from '@fortawesome/free-solid-svg-icons'
-
-
-
+import ReactPaginate from 'react-paginate'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import { Nav } from 'react-bootstrap'
 
 
 const Rtable = () => {
 
     const baseUrl = "http://localhost:3000/"
+    const [searchParams, setSearchParams] = useState()
 
     const [invoices, setInvoices] = useState([])
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [pages, setPages] = useState(1)
-    const [currentPage, setCurrentPage] = useState(1)
     const [page, setPage] = useState(1)
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [splitButtonOpen, setSplitButtonOpen] = useState(false);
-    const toggleDropDown = () => setDropdownOpen(!dropdownOpen);
-    const toggleSplit = () => setSplitButtonOpen(!splitButtonOpen);
+
+    const [currentPage, setCurrentPage] = useState(1)
+    const [dropdownUIValue, setDropDownUIValue] = useState("Αναζήτηση")
+    const [dropdownValue, setDropDownValue] = useState()
     const [searchTerm, setSearchTerm] = useState("")
 
 
@@ -57,27 +52,20 @@ const Rtable = () => {
         }
         fetcthInvoices();
 
+    }, [currentPage, searchParams])
 
-    }, [currentPage])
-
-
-
-
-    const nextPage = () => {
-        setCurrentPage(currentPage + 1)
-        console.log("Current page is  : " + currentPage)
-
-    }
-
-    const prevPage = () => {
-        setCurrentPage(currentPage - 1)
-        if (currentPage === 1) {
-            setCurrentPage(1)
-        }
-        console.log("Current page is  : " + currentPage)
+    const handlePage = (evnt) => {
+        console.log(evnt.selected)
+        setCurrentPage(evnt.selected)
     }
 
     const searchInvoices = (evn) => {
+        evn.preventDefault()
+        setSearchParams({
+            dropDownValue: dropdownValue,
+            searchTerm: searchTerm
+        })
+        console.log(searchParams)
         if (evn.keyCode === 13) {
             console.log(evn.target.value)
 
@@ -85,8 +73,32 @@ const Rtable = () => {
     }
 
     const dropSelection = (event) => {
+        switch(event) {
+            case "afm":
+                setDropDownUIValue("ΑΦΜ")
+                setDropDownValue("afm")
+                break
+            case "name":
+                setDropDownUIValue("Όνομα")
+                setDropDownValue("name")
+                break
+            case "billNumber":
+                setDropDownUIValue("Τιμολόγιο")
+                setDropDownValue("billNumber")
+                break
+            default:
+                setDropDownUIValue("Αναζήτηση")
+                setDropDownValue("name")
+                break
+
+        }
         console.log(event)
     }
+
+    const handleSearchChange = (chg) => {
+        setSearchTerm(chg.target.value)
+        console.log(chg.target.value)
+    } 
 
 
     let component
@@ -110,35 +122,46 @@ const Rtable = () => {
 
     return (
         <Container>
-            <InputGroup>
-                {/* <InputGroupAddon addonType="prepend"><Button><FontAwesomeIcon icon={}></Button></InputGroupAddon>
-                <Input />
-                <InputGroupAddon addonType="append"><Button>I'm a button</Button></InputGroupAddon> */}
-                <ButtonDropdown addonType="append" isOpen={dropdownOpen} toggle={toggleDropDown} onClick={ dropSelection}>
-                    <DropdownToggle caret>
-                        Αναζήτηση
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem divider />
-                        <DropdownItem eventKey="AFM">ΑΦΜ</DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem >Όνομα</DropdownItem>
-                        <DropdownItem divider />
-                        <DropdownItem >Αριθμό τιμολογίου</DropdownItem>
-                    </DropdownMenu>
-                </ButtonDropdown>
-                <Input />
-            </InputGroup>
-            <div>
-                <ul className="pagination text-center">
-                    <li key={1} className="active"><button onClick={prevPage}>Prev</button></li>
-                    <li key={2} className="disabled"><Input bsSize="sm" value={page + "\\" + pages} readOnly={true} /></li>
-                    <li key={3} className="active"><button onClick={nextPage}>Next</button></li>
-                    {/* <li><Input onKeyDown={searchInvoices} /></li> */}
-                </ul>
-            </div>
+            <Navbar>
+                <Nav.Item>
+                    <Dropdown onSelect={dropSelection}>
+                        <Dropdown.Toggle>
+                            {dropdownUIValue}
+                    </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item eventKey="afm">ΑΦΜ</Dropdown.Item>
+                            <Dropdown.Item eventKey="name">Όνομα</Dropdown.Item>
+                            <Dropdown.Item eventKey="billNumber">Αριθμό τιμολογίου</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Nav.Item>
+                <Nav.Item>
+                    <Form inline onSubmit={searchInvoices}>
+                        <Form.Control type="text" onChange={handleSearchChange} placeholder="κείμενο ή αριθμός" className="mr-sm-2" />
+                        <Button variant="outline-info" type="submit">Search</Button>
+                    </Form>
+                </Nav.Item>
+            </Navbar>
+            <ReactPaginate
+                previousLabel={'πίσω'}
+                nextLabel={'μπροστά'}
+                breakLabel={'...'}
+                pageCount={pages}
+                initialPage={0}
+                disableInitialCallback={true}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePage}
+                pageClassName={'page-item'}
+                pageLinkClassName={'page-link'}
+                containerClassName={'pagination'}
+                previousLinkClassName={'page-link'}
+                nextLinkClassName={'page-link'}
+                disabledClassName={'page-item disabled'}
+                activeClassName={'page-item active'} />
+
             {component}
-            </Container>    )
+        </Container>)
 
 }
 

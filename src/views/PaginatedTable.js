@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'reactstrap'
 import { Link } from 'react-router-dom'
 
-const PaginatedTable = (props) => {
+const PaginatedTable = ({invoices}) => {
 
     return (
         <Table>
@@ -15,7 +15,7 @@ const PaginatedTable = (props) => {
                 </tr>
             </thead>
             <tbody>
-                {props.invoices.map((data, i) =>
+                {invoices.map((data, i) =>
                     <tr key={i}>
                         <td><Link to={"/details/" + data._id}>{data.afm}</Link></td>
                         <td>{data.name}</td>
