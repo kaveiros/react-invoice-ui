@@ -16,8 +16,8 @@ const Content = (props) => {
             <NavBar toggle={props.toggle}/>
             <Switch>
                 <Route exact path="/all" component={Rtable} />
-                <Route exact path="/new" component={(props) => "New"} />
-                <Route exact path="/form" component={InvoiceEdit} />
+                <Route exact path="/new" component={InvoiceEdit} />
+                <Route exact path="/edit/:id" component={InvoiceEdit} />
                 <Route exact path="/details/:id" component={Details}/>
                 <Redirect from="/" to="/all"/>
             </Switch>
