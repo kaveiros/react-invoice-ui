@@ -14,6 +14,7 @@ import { Nav } from 'react-bootstrap'
 const Rtable = () => {
 
     const baseUrl = "http://localhost:3000/"
+    const headers = {"Content-Type": "application/json"}
     const [searchParams, setSearchParams] = useState()
 
     const [invoices, setInvoices] = useState([])
@@ -37,7 +38,7 @@ const Rtable = () => {
         const fetcthInvoices = async () => {
             console.log("Current page is  : " + currentPage)
             setLoading(true)
-            axios.get(baseUrl + "invoice/all/" + currentPage)
+            axios.post(baseUrl + "invoice/all/" + currentPage, searchParams, headers)
                 .then(response => {
                     const data = response.data
                     setInvoices(data.invoices)
@@ -100,6 +101,13 @@ const Rtable = () => {
         console.log(chg.target.value)
     } 
 
+    const handleBlur = (blurEvent) => {
+        if(blurEvent.target.value.length === 0) {
+            setDropDownUIValue("Αναζήτηση")
+            setSearchParams({})
+        }
+    }
+
 
     let component
     if (loading) {
@@ -137,7 +145,7 @@ const Rtable = () => {
                 </Nav.Item>
                 <Nav.Item>
                     <Form inline onSubmit={searchInvoices}>
-                        <Form.Control type="text" onChange={handleSearchChange} placeholder="κείμενο ή αριθμός" className="mr-sm-2" />
+                        <Form.Control type="text" onChange={handleSearchChange} onBlur={handleBlur} placeholder="κείμενο ή αριθμός" className="mr-sm-2" />
                         <Button variant="outline-info" type="submit">Search</Button>
                     </Form>
                 </Nav.Item>

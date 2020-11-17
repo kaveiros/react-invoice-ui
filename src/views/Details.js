@@ -19,6 +19,7 @@ class Details extends Component {
 
     }
 
+
     render() {
 
 
@@ -67,6 +68,7 @@ class Details extends Component {
                             </Alert>) 
                             }
                     <Button color="success" onClick={this.createNewHandler} tag={Link} to={"/form"}>Νέο τιμολόγιο</Button>
+                    <Button color="secondary" tag={Link} to={"/all"}>Πίσω</Button>
 
 
                 </CardBody>
