@@ -12,6 +12,7 @@ const PaginatedTable = ({invoices}) => {
                     <th>Όνομα</th>
                     <th>Αρ. Τιμολογίου</th>
                     <th>Ποσό</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -21,6 +22,7 @@ const PaginatedTable = ({invoices}) => {
                         <td>{data.name}</td>
                         <td>{data.billNumber}</td>
                         <td>{data.mainAmount}</td>
+                        <td><Link to={"/edit/" + data._id}>τροποποίηση</Link></td>
                     </tr>
                 )}
             </tbody>

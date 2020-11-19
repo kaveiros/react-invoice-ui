@@ -1,29 +1,57 @@
-import React, { Component } from 'react'
-import { Form, Button, Label, FormGroup, Input, Card, CardBody, CardHeader, Container } from 'reactstrap'
+import React, { Component, useEffect, useState } from 'react'
+import Container from 'react-bootstrap/Container'
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
 import DatePicker from 'reactstrap-date-picker'
 import * as formActions from '../actions/FormActions'
 import { connect } from 'react-redux';
 import { v4 as uuidv4 } from "uuid";
+import { Link, useParams } from 'react-router-dom'
+import axios from 'axios'
 
-class InvoiceEdit extends Component {
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            afm: 0,
-            mainAmount: 0,
-            mainDate: new Date().toISOString(),
-            modalOpen: false,
-            modalAmount: 0,
-            modalDate: new Date().toISOString(),
-            name:""
+const InvoiceEdit = () => {
+    const params = useParams()
+    const baseUrl = "http://localhost:3000/"
+    let _id = params.id
+    const blankPayment = { amount: 0, date: 123 }
+    const [paymenComponent, setPaymentComponent] = useState(0)
+    const [payments, setPayments] = useState([])
+
+
+    useEffect(() => {
+
+        if (_id) {
+            axios.get(baseUrl + "invoice/" + _id)
+                .then(response => {
+                    console.log(response.data)
+                }).catch(error => {
+                    console.log(error.message)
+
+                })
         }
+        else {
+            console.log("No _id")
+        }
+
+    }, [_id])
+
+    const [stateInvoice, setStateInvoice] = useState({});
+    let state = {
+        afm: 0,
+        mainAmount: 0,
+        mainDate: new Date().toISOString(),
+        modalOpen: false,
+        modalAmount: 0,
+        modalDate: new Date().toISOString(),
+        name: ""
     }
 
     /**
      * Toggle modal
      */
-    toggleModal = () => {
+    const toggleModal = () => {
         let isOpen = this.state.modalOpen
         console.log(isOpen)
         console.log(this.state)
@@ -38,68 +66,72 @@ class InvoiceEdit extends Component {
     /**
      * Main form events
      */
-    addAfm = (event) => {
+    const addAfm = (event) => {
         this.setState({ afm: event.target.value })
     }
 
-    addPayment = (event) => {
-        const id = uuidv4()
-        this.props.onAddPayment(id)
+    const addPayment = (event) => {
+        setPayments(payments => [...payments, { amount: 0, date: 123 }])
+        console.log(payments)
+
     }
 
-    nameChanged = (e) => {
+    const nameChanged = (e) => {
         console.log("amount changed to " + e.target.value)
 
         this.setState({ name: e.target.value })
-        
+
     }
 
-    mainAmountChanged = (e) => {
+    const mainAmountChanged = (e) => {
         console.log("amount changed to " + e.target.value)
 
         this.setState({ mainAmount: e.target.value })
-       
+
     }
 
 
-    mainDateChanged = (e, f) => {
-       
+    const mainDateChanged = (e, f) => {
+
         this.setState({ mainDate: e })
-        
+
     }
 
 
-    modalAmountChanged = (e) => {
-        
+    const modalAmountChanged = (e) => {
+
         this.setState({ modalAmount: e.target.value })
     }
-        
 
 
-    modalDateChanged = (e, f) => {
+
+    const modalDateChanged = (e, f) => {
         console.log("date is " + e + " => " + f)
         this.setState({ modalDate: e })
-       
+
     }
 
-    addModalPayment = (e) => {
+    const addModalPayment = (e) => {
         e.preventDefault()
         let id = uuidv4()
-        this.setState({ additionalPayments: [...this.state.additionalPayments, {
-            additionalId: id,
-            additionalAmount: this.state.modalAmount,
-            additionalDate: this.state.modalDate
-        }]})
+        this.setState({
+            additionalPayments: [...this.state.additionalPayments, {
+                additionalId: id,
+                additionalAmount: this.state.modalAmount,
+                additionalDate: this.state.modalDate
+            }]
+        })
         this.setState({ modalOpen: false })
         console.log(this.state.additionalPayments)
     }
 
-    delete = (event) => {
+    const deleteFunction = (event) => {
+        setPayments(payments.filter(item => item.date !== 123))
+        console.log(event.target)
 
-        this.props.onRemovePayment(event)
     }
 
-    submitForm = (e) => {
+    const submitForm = (e) => {
         e.preventDefault()
         console.log("Form has been sunbmitted")
         console.log(this.state)
@@ -108,33 +140,46 @@ class InvoiceEdit extends Component {
 
 
 
-    render() {
 
-        return (
-            <div>
-                <Container>
+
+    return (
+        <Container>
             <Card>
-                <CardHeader>Νέο τιμολογίο</CardHeader>
-                <CardBody>
+                <Card.Header>{_id ? "Τροποποίηση" : "Νέο τιμολογίο"}</Card.Header>
+                <Card.Body>
                     <Form onSubmit={(e) => { this.submitForm(e) }}>
-                        <FormGroup>
-                            <Label for="exampleEmail">ΑΦΜ</Label>
-                            <Input type="input" name="email" id="afm" placeholder="ΑΦΜ" onChange={(e) => { this.addAfm(e) }} />
-                            <Label for="payment">Όνομα</Label>
-                            <Input type="input" name="name" id='name' placeholder="Όνομα εταιρίας" onChange={(e) => { this.nameChanged(e) }} />
-                            <Label for="payment">Ποσό Πληρωμής</Label>
-                            <Input type="input" name="amount" id='payment' placeholder="amount" onChange={(e) => { this.mainAmountChanged(e) }} />
-                            <Label for="paymentDate">Ημερομηνία πληρωμής</Label>
-                            <DatePicker dateFormat="DD MM YYYY" value={this.state.mainDate} onChange={(e, f) => { this.mainDateChanged(e, f) }} />
-                        </FormGroup>
-                        <Button color="success" type="submit">Αποθήκευση</Button>
+                        <Form.Group>
+                            <Form.Label>ΑΦΜ</Form.Label>
+                            <Form.Control type="input" name="email" id="afm" placeholder="ΑΦΜ" value="" />
+                            {/* onChange={(e) => { this.addAfm(e) }} /> */}
+                            <Form.Label>Όνομα</Form.Label>
+                            <Form.Control type="input" name="name" id='name' placeholder="Όνομα εταιρίας" />
+                            {/* onChange={(e) => { this.nameChanged(e) }} /> */}
+                            <Form.Label>Ποσό Πληρωμής</Form.Label>
+                            <Form.Control type="input" name="amount" id='payment' placeholder="amount" />
+                            {/* onChange={(e) => { this.mainAmountChanged(e) }} /> */}
+                            <Form.Label>Ημερομηνία πληρωμής</Form.Label>
+                            <DatePicker dateFormat="DD MM YYYY" value={state.mainDate} />
+                            {/* onChange={(e, f) => { this.mainDateChanged(e, f) }} /> */}
+                            <Button variant="info" onClick={addPayment}>Προσθήκη Πληρωμής</Button>
+                        </Form.Group>
+                        <Button variant="success" type="submit">Αποθήκευση</Button>
+                        <Button variant="secondary" tag={Link} to={"/all"}>Πίσω</Button>
                     </Form>
-                </CardBody>
+                    {payments.map((payment, idx) =>
+                        <div key={idx}>
+                            <Form.Group>
+                                <Form.Label>Ποσό Πληρωμής</Form.Label>
+                                <Form.Control type="input" name="amount" id={idx} placeholder="amount" onChange={(e) => { this.amountChanged(e) }} />
+                                <Form.Label>Ημερομηνία πληρωμής</Form.Label>
+                                <DatePicker id={"date-" + idx} dateFormat="DD MM YYYY"  onChange={(e, f) => { this.dateChanged(e, f) }} />
+                                <Button id={"delete-" + idx} onClick={()=>deleteFunction(idx)}>delete</Button>
+                            </Form.Group>
+                        </div>)}
+                </Card.Body>
             </Card>
-            </Container>  
-            </div>
-        )
-    }
+        </Container>
+    )
 
 
 }
@@ -157,4 +202,5 @@ const mapDispatchToProps = dispatch => {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceEdit)
+//export default connect(mapStateToProps, mapDispatchToProps)(InvoiceEdit)
+export default InvoiceEdit
