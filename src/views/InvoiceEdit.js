@@ -1,11 +1,9 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
-// import DatePicker from 'reactstrap-date-picker'
 import * as formActions from '../actions/FormActions'
-import { connect } from 'react-redux';
 import { v4 as uuidv4 } from "uuid";
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
@@ -17,14 +15,13 @@ const InvoiceEdit = () => {
     const params = useParams()
     const baseUrl = "http://localhost:3000/"
     let _id = params.id
-    const blankPayment = { id: 0, amount: 0, date: 123 }
+    const blankPayment = { id: uuidv4(), amount: 0, date: new Date() }
     const [paymenComponent, setPaymentComponent] = useState(0)
     const [payments, setPayments] = useState([])
     const [startDate, setStartDate] = useState(new Date());
     const [name, setName] = useState()
     const [afm, setAfm] = useState()
     const [mainAmount, setMainAmount] = useState(0)
-    const [paymentCards, setCards] = useState([])
 
 
     useEffect(() => {
@@ -36,7 +33,7 @@ const InvoiceEdit = () => {
                         console.log(response.data)
                     }).catch(error => {
                         console.log(error.message)
-    
+
                     })
             }
             else {
@@ -62,20 +59,6 @@ const InvoiceEdit = () => {
     //     name: ""
     // }
 
-    /**
-     * Toggle modal
-     */
-    const toggleModal = () => {
-        let isOpen = this.state.modalOpen
-        console.log(isOpen)
-        console.log(this.state)
-        if (!isOpen) {
-            this.setState({ modalOpen: true })
-        }
-        else {
-            this.setState({ modalOpen: false })
-        }
-    }
 
     /**
      * Main form events
@@ -85,9 +68,9 @@ const InvoiceEdit = () => {
     }
 
     const addPayment = (event) => {
-         console.log(payments.length)
-         setPayments(payments => [...payments, { id: uuidv4(), amount: 0, date: new Date() }])
-         console.log(payments)
+        console.log(payments.length)
+        setPayments(payments => [...payments, blankPayment])
+        console.log(payments)
 
     }
 
@@ -102,48 +85,25 @@ const InvoiceEdit = () => {
     }
 
 
-    const handleMainDate = (date) => {
-        setStartDate(date)
-        console.log(startDate)
+    const handleMainDate = (dateEvent) => {
+        setStartDate(dateEvent)
+        console.log(dateEvent)
     }
 
+    const handleDate = (date, dateId) => {
+        let newPayments = payments.map((payment, index) => payment.id === dateId ? { id: payment.id, amount: payment.amount, date: date } : payment)
+        console.log(newPayments)
+        setPayments(newPayments)
+    }
 
     const handleAmount = (e) => {
 
         let paymentId = e.target.id
         let amount = e.target.value
-        console.log(paymentId)
-        let newPayments = payments.map((payment, index)=>payment.id===paymentId? {id:paymentId, amount:amount, date:new Date()}:payment)
-        //shallow copy of payments
-        // let paymentsShallow = payments.slice()
-        // let paymentCopy = paymentsShallow.find(payment=>payment.id = paymentId)
-        console.log(newPayments)
-        // paymentCopy.amount = amount
-        // console.log(paymentCopy)
+        let newPayments = payments.map((payment, index) => payment.id === paymentId ? { id: payment.id, amount: amount, date: payment.date } : payment)
         setPayments(newPayments)
+        console.log(newPayments)
 
-    }
-
-
-
-    const modalDateChanged = (e, f) => {
-        console.log("date is " + e + " => " + f)
-        this.setState({ modalDate: e })
-
-    }
-
-    const addModalPayment = (e) => {
-        e.preventDefault()
-        let id = uuidv4()
-        this.setState({
-            additionalPayments: [...this.state.additionalPayments, {
-                additionalId: id,
-                additionalAmount: this.state.modalAmount,
-                additionalDate: this.state.modalDate
-            }]
-        })
-        this.setState({ modalOpen: false })
-        console.log(this.state.additionalPayments)
     }
 
     const deleteFunction = (id) => {
@@ -155,8 +115,15 @@ const InvoiceEdit = () => {
     const submitForm = (e) => {
         e.preventDefault()
         console.log("Form has been sunbmitted")
-        console.log(this.state)
-        this.props.onSavePayment(this.state)
+        let payment = {
+            afm: afm,
+            name: name,
+            mainAmount: mainAmount,
+            startDate: startDate,
+            additionalPayments: payments
+        }
+        console.log(payment)
+        //this.props.onSavePayment(this.state)
     }
 
 
@@ -168,42 +135,42 @@ const InvoiceEdit = () => {
             <Card>
                 <Card.Header>{_id ? "Τροποποίηση" : "Νέο τιμολογίο"}</Card.Header>
                 <Card.Body>
-                    <Form onSubmit={(e) => { this.submitForm(e) }}>
+                    <Form onSubmit={submitForm} >
                         <Form.Group>
                             <Form.Label>ΑΦΜ</Form.Label>
                             <Form.Control type="input" name="email" id="afm" placeholder="ΑΦΜ" onChange={handleAfm} />
                             <Form.Label>Όνομα</Form.Label>
                             <Form.Control type="input" name="name" id='name' placeholder="Όνομα εταιρίας" onChange={handleName} />
                             <Form.Label>Ποσό Πληρωμής</Form.Label>
-                            <Form.Control type="input" name="amount" id='payment' placeholder="amount" onChange={handleMainAmount} />
+                            <Form.Control type="input" name="amount" id='payment' placeholder="ποσό" onChange={handleMainAmount} />
                             <Form.Label>Ημερομηνία πληρωμής</Form.Label>
                             <Form.Row>
-                                <DatePicker selected={startDate} onChange={date => handleMainDate(date)} />
+                                <DatePicker selected={startDate} onChange={handleMainDate} />
                             </Form.Row>
                             {/* <DatePicker dateFormat="DD MM YYYY" value={state.mainDate} /> */}
                             {/* onChange={(e, f) => { this.mainDateChanged(e, f) }} /> */}
                             <Button variant="info" onClick={addPayment}>Προσθήκη Πληρωμής</Button>
                         </Form.Group>
+
+                        {payments.map((payment, idx) =>
+                            <Card key={idx}>
+                                <Card.Title>Πληρωμή {idx + 1}</Card.Title>
+                                <Card.Body>
+                                    <Form.Group>
+                                        <Form.Label>Ποσό Πληρωμής</Form.Label>
+                                        <Form.Control type="input" name="amount" id={payment.id} placeholder="ποσό" onChange={handleAmount} />
+                                        <Form.Label>Ημερομηνία πληρωμής</Form.Label>
+                                        <Form.Label>{payment.id}</Form.Label>
+                                        <Form.Row>
+                                            <DatePicker id={payment.id} selected={payment.date} onSelect={(date) => handleDate(date, payment.id)} />
+                                        </Form.Row>
+                                        <Button id={"delete-" + idx} onClick={() => deleteFunction(payment.id)}>delete</Button>
+                                    </Form.Group>
+                                </Card.Body>
+                            </Card>)}
                         <Button variant="success" type="submit">Αποθήκευση</Button>
                         <Button variant="secondary" tag={Link} to={"/all"}>Πίσω</Button>
                     </Form>
-                    {payments.map((payment, idx) =>
-                        <Card key={idx}>
-                            <Card.Title>Πληρωμή {idx + 1}</Card.Title>
-                            <Card.Body>
-                                <Form.Group>
-                                    <Form.Label>Ποσό Πληρωμής</Form.Label>
-                                    <Form.Control type="input" name="amount" id={payment.id} placeholder="amount" onChange={handleAmount} />
-                                    <Form.Label>Ημερομηνία πληρωμής</Form.Label>
-                                    <Form.Label>{payment.id}</Form.Label>
-                                    <Form.Row>
-                                        <DatePicker selected={startDate} onChange={date => setStartDate(date)} />
-                                    </Form.Row>
-                                    {/* <DatePicker id={"date-" + idx} dateFormat="DD MM YYYY"  onChange={(e, f) => { this.dateChanged(e, f) }} /> */}
-                                    <Button id={"delete-" + idx} onClick={() => deleteFunction(payment.id)}>delete</Button>
-                                </Form.Group>
-                            </Card.Body>
-                        </Card>)}
                 </Card.Body>
             </Card>
         </Container>
@@ -229,6 +196,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-
-//export default connect(mapStateToProps, mapDispatchToProps)(InvoiceEdit)
 export default InvoiceEdit
