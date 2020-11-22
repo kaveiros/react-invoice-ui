@@ -3,7 +3,6 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/Card'
-import * as formActions from '../actions/FormActions'
 import { v4 as uuidv4 } from "uuid";
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
@@ -11,33 +10,30 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 
-const InvoiceEdit = () => {
+const InvoiceEdit = ({_id}) => {
     const params = useParams()
     const baseUrl = "http://localhost:3000/"
-    let _id = params.id
+    //let _id = params.id
     const blankPayment = { id: uuidv4(), amount: 0, date: new Date() }
-    const [paymenComponent, setPaymentComponent] = useState(0)
     const [payments, setPayments] = useState([])
     const [startDate, setStartDate] = useState(new Date());
-    const [name, setName] = useState()
-    const [afm, setAfm] = useState()
-    const [mainAmount, setMainAmount] = useState(0)
-
+    const [name, setName] = useState('')
+    const [afm, setAfm] = useState('')
+    const [mainAmount, setMainAmount] = useState('')
 
     useEffect(() => {
 
-        const getPaymentIfexists = () => {
+        const getPaymentIfexists = async () => {
             if (_id) {
                 axios.get(baseUrl + "invoice/" + _id)
                     .then(response => {
-                        console.log(response.data)
+                        //console.log(response.data)
                     }).catch(error => {
-                        console.log(error.message)
+                        //console.log(error.message)
 
                     })
             }
             else {
-                console.log("No _id")
             }
 
         }
@@ -48,7 +44,6 @@ const InvoiceEdit = () => {
 
     }, [_id])
 
-    const [stateInvoice, setStateInvoice] = useState({});
     // let state = {
     //     afm: 0,
     //     mainAmount: 0,
@@ -138,11 +133,11 @@ const InvoiceEdit = () => {
                     <Form onSubmit={submitForm} >
                         <Form.Group>
                             <Form.Label>ΑΦΜ</Form.Label>
-                            <Form.Control type="input" name="email" id="afm" placeholder="ΑΦΜ" onChange={handleAfm} />
+                            <Form.Control type="input" name="email" id="afm" placeholder="ΑΦΜ" value={afm} onChange={handleAfm} />
                             <Form.Label>Όνομα</Form.Label>
-                            <Form.Control type="input" name="name" id='name' placeholder="Όνομα εταιρίας" onChange={handleName} />
+                            <Form.Control type="input" name="name" id='name' placeholder="Όνομα εταιρίας" value={name} onChange={handleName} />
                             <Form.Label>Ποσό Πληρωμής</Form.Label>
-                            <Form.Control type="input" name="amount" id='payment' placeholder="ποσό" onChange={handleMainAmount} />
+                            <Form.Control type="input" name="amount" id='payment' value={mainAmount} placeholder="ποσό" onChange={handleMainAmount} />
                             <Form.Label>Ημερομηνία πληρωμής</Form.Label>
                             <Form.Row>
                                 <DatePicker selected={startDate} onChange={handleMainDate} />
@@ -177,23 +172,6 @@ const InvoiceEdit = () => {
     )
 
 
-}
-
-
-const mapStateToProps = (state) => {
-
-    return {
-        payments: state.FormReducer.payments
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onAddPayment: (id) => dispatch(formActions.addPayment(this.state)),
-        onRemovePayment: (index) => dispatch(formActions.removePayment(index)),
-        onFetchPayments: () => dispatch(formActions.fetchPayments()),
-        onSavePayment: (payment) => dispatch(formActions.savePayment(payment))
-    }
 }
 
 export default InvoiceEdit

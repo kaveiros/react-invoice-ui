@@ -53,6 +53,7 @@ const Rtable = () => {
         }
         fetcthInvoices();
 
+        // eslint-disable-next-line
     }, [currentPage, searchParams])
 
     const handlePage = (evnt) => {
