@@ -29,47 +29,36 @@ const InvoiceEdit = () => {
     const [errorMessage, setErrorMessage] = useState('')
 
     const getPaymentIfexists = async () => {
-        InvoiceService.getInvoice(_id)
+        if (_id) {
+            setIsNew(false)
+            InvoiceService.getInvoice(_id)
             .then(response => {
                 setInvoiceId(_id)
-                console.log(response.data)
                 setAfm(response.data.afm)
                 setName(response.data.name)
                 setMainAmount(response.data.mainAmount)
                 var dateTi = new Date(response.data.billDate)
-                console.log(dateTi)
                 setStartDate(dateTi)
                 var additionalPayments = response.data.additionalPayments
-                console.log(additionalPayments)
                 setPayments(payments => ([...payments, ...additionalPayments]))
                 setBillNumber(response.data.billNumber)
-                console.log(payments)
             }).catch(error => {
                 setHasError(true)
                 setErrorMessage(error.message)
 
-                console.log(error.message)
-
             })
-    }
 
-    useEffect(() => {
-
-       
-
-        if (_id) {
-            setIsNew(false)
-            getPaymentIfexists();
-
-        }
-        else {
+        }else{
             setIsNew(true)
         }
 
 
+    }
 
-
-    }, [])
+    useEffect(() => {
+        getPaymentIfexists();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     /**
      * Main form events
@@ -238,7 +227,7 @@ const InvoiceEdit = () => {
                                 </Card.Body>
                             </Card>)}
                         <Button variant="success" type="submit">Αποθήκευση</Button>
-                        <Button variant="secondary" tag={Link} to={"/all"}>Πίσω</Button>
+                        <Button variant="secondary" as={Link} to={"/all"}>Πίσω</Button>
                     </Form>
                 </Card.Body>
             </Card>

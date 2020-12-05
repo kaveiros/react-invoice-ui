@@ -18,11 +18,9 @@ const Rtable = () => {
     const [searchParams, setSearchParams] = useState()
 
     const [invoices, setInvoices] = useState([])
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
     const [pages, setPages] = useState(1)
-    const [page, setPage] = useState(1)
-
     const [currentPage, setCurrentPage] = useState(1)
     const [dropdownUIValue, setDropDownUIValue] = useState("Αναζήτηση")
     const [dropdownValue, setDropDownValue] = useState()
@@ -37,13 +35,11 @@ const Rtable = () => {
 
         const fetcthInvoices = async () => {
             console.log("Current page is  : " + currentPage)
-            setLoading(true)
             axios.post(baseUrl + "invoice/all/" + currentPage, searchParams, headers)
                 .then(response => {
                     const data = response.data
                     setInvoices(data.invoices)
                     setPages(data.pages)
-                    setPage(data.currentPage)
                     setLoading(false)
                 }).catch(error => {
                     setLoading(false)
@@ -112,14 +108,14 @@ const Rtable = () => {
 
     let component
     if (loading) {
-        component = <Alert color="dark">
-            <p>Loading.....</p>
+        component = <Alert variant="dark">
+            <p>Φορτώνει.....</p>
         </Alert>
 
     }
     if (error !== '') {
-        component = <Alert color="danger">
-            <p>An error has occcured</p>
+        component = <Alert variant="danger">
+            <p>Σφάλμα στην ανάκτηση τιμολογίων.</p>
         </Alert>
     }
     else {

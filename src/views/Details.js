@@ -1,99 +1,86 @@
-import React from 'react'
-import { Component } from "react";
-import { connect } from 'react-redux'
-import * as ApiActions from '../api/ApiActions'
-import { Button, Card, CardHeader, Alert, CardBody, CardTitle, CardSubtitle, CardText, CardDeck } from 'reactstrap';
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
 
-class Details extends Component {
+import InvoiceService from '../services/InvoiceService'
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
+import { Link, useParams } from 'react-router-dom'
+import "react-datetime/css/react-datetime.css"
+import Alert from 'react-bootstrap/Alert'
+import CardDeck from 'react-bootstrap/CardDeck'
 
-    componentDidMount() {
-        const _id = this.props.match.params.id
-        console.log(_id)
-        this.props.onLoadInvoive(_id)
-        console.log(this.props.invoice)
+const Details = () => {
+
+    const initialState = {
+        afm: '',
+        billDate: '',
+        billNumber: '',
+        name: '',
+        mainAmount: '',
+        additionalPayments: []
     }
+    const params = useParams()
+    const [detailsData, setDetailsData] = useState(initialState)
+    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(false)
+    let _id = params.id
 
-    createNewHandler = () => {
-        this.props.onCreateNewInvoice();
+    useEffect(() => {
+        setLoading(true)
+        InvoiceService.getInvoice(_id)
+            .then(response => {
+                setDetailsData({
+                    afm: response.data.afm,
+                    billDate: response.data.billDate,
+                    billNumber: response.data.billNumber,
+                    name: response.data.name,
+                    mainAmount: response.data.mainAmount,
+                    additionalPayments: response.data.additionalPayments
+                })
+                setLoading(false)
+            })
+            .catch(error => {
+                setError(true)
+            })
 
-    }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
 
-    render() {
+    return (
+        <Card>
+            { error && <Alert variant="danger">
+                <p>Σφάλμα ανάκτησης τιμολογίου</p>
+            </Alert>
 
-
-        if (this.props.error) {
-            return (
-                <Alert color="danger">
-                    <p>Σφάλμα ανάκτησης τιμολογίου</p>
-                </Alert>
-            )
-
-        }
-        if (this.props.loading) {
-            return (
-                <Alert color="dark">
+            }
+            {
+                loading &&
+                <Alert variant="dark">
                     <p>Φορτώνει.....</p>
                 </Alert>
-            )
 
-        }
-
-
-        return (
-
-            <Card>
-                <CardHeader>Ονομα εταιρίας: {this.props.invoice.name}</CardHeader>
-                <CardBody>
-                    <CardTitle>ΑΦΜ: {this.props.invoice.afm}</CardTitle>
-                    <CardSubtitle>Αριθμός τιμολογίου: {this.props.invoice.billNumber}</CardSubtitle>
-                    <CardText>Τελευταια πληρωμη: {this.props.invoice.billDate}</CardText>
-                    {this.props.invoice.paymentDates != null && this.props.invoice.paymentDates.length > 0 ?
-
-                        (<div>
-                            <h5>Επιπλέον πληρωμές αν υπάρχουν</h5>
-                            {
-                                this.props.invoice.paymentDates.map(d =>
-                                    <CardDeck>
-                                        <Card>
-                                            <CardText>Ποσό:{d.amount}</CardText>
-                                            <CardText>Ημερομηνία:{d.date}</CardText>
-                                        </Card>
-                                    </CardDeck>)}
-
-
-                        </div>) : (<Alert color="secondary">
-                            <p>Δεν υπάρχουν επιπλέον πληρωμές</p>
-                            </Alert>) 
-                            }
-                    <Button color="success" onClick={this.createNewHandler} tag={Link} to={"/form"}>Νέο τιμολόγιο</Button>
-                    <Button color="secondary" tag={Link} to={"/all"}>Πίσω</Button>
-
-
-                </CardBody>
-
-            </Card>
-
-        )
-    }
-
-
+            }
+            <Card.Header>Ονομα εταιρίας: {detailsData.name}</Card.Header>
+            <Card.Body>
+                <Card.Title>ΑΦΜ: {detailsData.afm}</Card.Title>
+                <Card.Subtitle>Αριθμός τιμολογίου: {parseInt(detailsData.billNumber)}</Card.Subtitle>
+                <Card.Text>Ποσό:{detailsData.mainAmount}</Card.Text>
+                <Card.Text>Τελευταια πληρωμη: {new Date(detailsData.billDate).toDateString()}</Card.Text>
+                {
+                    detailsData.additionalPayments.map((d, idx) =>
+                        <CardDeck key={idx}>
+                            <Card>
+                                <Card.Header>Επιπλέον πληρωμές</Card.Header>
+                                <Card.Text>Ποσό: {d.amount}</Card.Text>
+                                <Card.Text>Ημερομηνία: {new Date(d.date).toDateString()}</Card.Text>
+                            </Card>
+                        </CardDeck>)
+                }
+                <Button variant="success" as={Link} to={"/new"}>Νέο τιμολόγιο</Button>
+                <Button variant="secondary" as={Link} to={"/all"}>Πίσω</Button>
+            </Card.Body>
+        </Card>
+    )
 }
 
-const matchStateToProps = (state) => {
-
-    return {
-        invoice: state.InvoiceReducer.invoice
-    }
-
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        onLoadInvoive: _id => dispatch(ApiActions.loadSingleInvoice(_id)),
-        onCreateNewInvoice: () => dispatch(ApiActions.createNewInvoice())
-    }
-}
-
-export default connect(matchStateToProps, mapDispatchToProps)(Details) 
+export default Details 
