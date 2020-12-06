@@ -1,28 +1,25 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import SideBar from './views/Sidebar'
 import Content from './views/Content';
 
 
-class App extends Component {
+const App = () => {
 
-  render() {
+  const[isOpen, setOpen] = useState(true)
+  const toggle = () => setOpen(!isOpen)
+
     return (
       
       <div className="App wrapper">
-        <SideBar/>
-        <Content/>
-        {/* <SideBar toggle={toggle} isOpen={isOpen} />
-        <Content props={this.props} toggle={toggle} isOpen={isOpen} /> */}
+        <SideBar toggle={toggle} isOpen={isOpen}/>
+        <Content toggle={toggle} isOpen={isOpen} />
       </div>
 
     )
 
   }
 
-}
 
-// const[isOpen, setOpen] = useState(true)
-// const toggle = () => setOpen(!isOpen)
 
 export default App;

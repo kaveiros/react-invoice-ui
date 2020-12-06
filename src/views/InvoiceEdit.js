@@ -72,31 +72,24 @@ const InvoiceEdit = () => {
     }
 
     const addPayment = (event) => {
-        console.log(payments.length)
         setPayments(payments => [...payments, blankPayment])
-        console.log(payments)
-
     }
 
     const handleName = (e) => {
         setName(e.target.value)
-        console.log(name)
     }
 
     const handleMainAmount = (e) => {
         setMainAmount(e.target.value)
-        console.log(mainAmount)
     }
 
 
     const handleMainDate = (dateEvent) => {
         setStartDate(dateEvent)
-        console.log(dateEvent)
     }
 
     const handleDate = (date, dateId) => {
         let newPayments = payments.map((payment, index) => payment.id === dateId ? { id: payment.id, amount: payment.amount, date: new Date(date) } : payment)
-        console.log(newPayments)
         setPayments(newPayments)
     }
 
@@ -106,14 +99,11 @@ const InvoiceEdit = () => {
         let amount = e.target.value
         let newPayments = payments.map((payment, index) => payment.id === paymentId ? { id: payment.id, amount: amount, date: new Date(payment.date) } : payment)
         setPayments(newPayments)
-        console.log(newPayments)
 
     }
 
     const deleteFunction = (id) => {
         setPayments(payments.filter(item => item.id !== id))
-        console.log(id)
-
     }
 
     const handleNewInvoice = () => {
@@ -130,7 +120,6 @@ const InvoiceEdit = () => {
 
     const submitForm = (e) => {
         e.preventDefault()
-        console.log("Form has been sunbmitted")
         let payment = {
             _id: invoiceId,
             afm: afm,
@@ -144,17 +133,13 @@ const InvoiceEdit = () => {
         if(isNew) {
             InvoiceService.saveInvoice(payment)
                 .then(response => {
-                    console.log("Response")
-                    console.log(response.data)
                     setSubmitted(true)
                 }).catch(error => {
                     setHasError(true)
                     setSubmitted(false)
                     setErrorMessage(error.message)
-                    console.log(error.message)
     
                 })
-            console.log(JSON.stringify(payment))
         }
         else {
             InvoiceService.updateInvoice(invoiceId, payment)
@@ -166,7 +151,6 @@ const InvoiceEdit = () => {
                 setHasError(true)
                 setSubmitted(false)
                 setErrorMessage(error.message)
-                console.log(error.message)
 
             })
                 }
