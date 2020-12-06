@@ -9,11 +9,11 @@ import Details from './Details'
 import Rtable from './RTable'
 
 
-const Content = (props) => {
+const Content = ({isOpen, toggle}) => {
 
     return (
-        <Container fluid className={classNames('content', { 'is-open': props.isOpen })}>
-            <NavBar toggle={props.toggle}/>
+        <Container fluid className={classNames('content', { 'is-open': isOpen })}>
+            <NavBar toggle={toggle}/>
             <Switch>
                 <Route exact path="/all" component={Rtable} />
                 <Route exact path="/new" component={InvoiceEdit} />

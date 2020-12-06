@@ -4,19 +4,19 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import PaginatedTable from './PaginatedTable'
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
-import axios from 'axios'
 import ReactPaginate from 'react-paginate'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Nav } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft, faChevronRight, faSearchDollar } from '@fortawesome/free-solid-svg-icons';
+import InvoiceService from '../services/InvoiceService'
+
 
 
 const Rtable = () => {
 
-    const baseUrl = "http://localhost:3000/"
-    const headers = {"Content-Type": "application/json"}
     const [searchParams, setSearchParams] = useState()
-
     const [invoices, setInvoices] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
@@ -26,16 +26,10 @@ const Rtable = () => {
     const [dropdownValue, setDropDownValue] = useState()
     const [searchTerm, setSearchTerm] = useState("")
 
-
-
-
-
-
     useEffect(() => {
 
         const fetcthInvoices = async () => {
-            console.log("Current page is  : " + currentPage)
-            axios.post(baseUrl + "invoice/all/" + currentPage, searchParams, headers)
+            InvoiceService.getAllInvoices(currentPage, searchParams)
                 .then(response => {
                     const data = response.data
                     setInvoices(data.invoices)
@@ -44,7 +38,6 @@ const Rtable = () => {
                 }).catch(error => {
                     setLoading(false)
                     setError(error.message)
-
                 })
         }
         fetcthInvoices();
@@ -53,8 +46,9 @@ const Rtable = () => {
     }, [currentPage, searchParams])
 
     const handlePage = (evnt) => {
-        console.log(evnt.selected)
-        setCurrentPage(evnt.selected)
+        if (evnt.selected !== 0) {
+            setCurrentPage(evnt.selected)
+        }
     }
 
     const searchInvoices = (evn) => {
@@ -63,15 +57,10 @@ const Rtable = () => {
             dropDownValue: dropdownValue,
             searchTerm: searchTerm
         })
-        console.log(searchParams)
-        if (evn.keyCode === 13) {
-            console.log(evn.target.value)
-
-        }
     }
 
     const dropSelection = (event) => {
-        switch(event) {
+        switch (event) {
             case "afm":
                 setDropDownUIValue("ΑΦΜ")
                 setDropDownValue("afm")
@@ -90,49 +79,40 @@ const Rtable = () => {
                 break
 
         }
-        console.log(event)
     }
 
     const handleSearchChange = (chg) => {
         setSearchTerm(chg.target.value)
-        console.log(chg.target.value)
-    } 
+    }
 
     const handleBlur = (blurEvent) => {
-        if(blurEvent.target.value.length === 0) {
+        if (blurEvent.target.value.length === 0) {
             setDropDownUIValue("Αναζήτηση")
             setSearchParams({})
         }
     }
 
+    const next = <FontAwesomeIcon icon={faChevronRight} className="mr-2"/>
 
-    let component
-    if (loading) {
-        component = <Alert variant="dark">
-            <p>Φορτώνει.....</p>
-        </Alert>
+    const previous = <FontAwesomeIcon icon={faChevronLeft} className="mr-2"/>
 
-    }
-    if (error !== '') {
-        component = <Alert variant="danger">
-            <p>Σφάλμα στην ανάκτηση τιμολογίων.</p>
-        </Alert>
-    }
-    else {
-
-        component = <PaginatedTable invoices={invoices} />
-    }
-
+    const searchBtn = <FontAwesomeIcon icon={faSearchDollar} className="mr-2"/>
 
 
     return (
         <Container>
+            {loading && <Alert variant="dark">
+                <p>Φορτώνει.....</p>
+            </Alert>}
+            {error && <Alert variant="danger">
+                <p>Σφάλμα στην ανάκτηση τιμολογίων.</p>
+            </Alert>}
             <Navbar>
                 <Nav.Item>
                     <Dropdown onSelect={dropSelection}>
                         <Dropdown.Toggle>
                             {dropdownUIValue}
-                    </Dropdown.Toggle>
+                        </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item eventKey="afm">ΑΦΜ</Dropdown.Item>
                             <Dropdown.Item eventKey="name">Όνομα</Dropdown.Item>
@@ -143,16 +123,16 @@ const Rtable = () => {
                 <Nav.Item>
                     <Form inline onSubmit={searchInvoices}>
                         <Form.Control type="text" onChange={handleSearchChange} onBlur={handleBlur} placeholder="κείμενο ή αριθμός" className="mr-sm-2" />
-                        <Button variant="outline-info" type="submit">Search</Button>
+                        <Button variant="outline-info" type="submit">{searchBtn}</Button>
                     </Form>
                 </Nav.Item>
             </Navbar>
             <ReactPaginate
-                previousLabel={'πίσω'}
-                nextLabel={'μπροστά'}
+                previousLabel={previous}
+                nextLabel={next}
                 breakLabel={'...'}
                 pageCount={pages}
-                initialPage={0}
+                initialPage={1}
                 disableInitialCallback={true}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
@@ -165,7 +145,7 @@ const Rtable = () => {
                 disabledClassName={'page-item disabled'}
                 activeClassName={'page-item active'} />
 
-            {component}
+            <PaginatedTable invoices={invoices} />
         </Container>)
 
 }
